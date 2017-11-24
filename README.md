@@ -1,15 +1,19 @@
-fauria/lamp
-==========
+peter-hartmann/lamp
+===================
 
-![docker_logo](https://raw.githubusercontent.com/fauria/docker-lamp/master/docker_139x115.png)![docker_fauria_logo](https://raw.githubusercontent.com/fauria/docker-lamp/master/docker_fauria_161x115.png)
-
-This Docker container implements a last generation LAMP stack with a set of popular PHP modules. Includes support for [Composer](https://getcomposer.org/), [Bower](http://bower.io/) and [npm](https://www.npmjs.com/) package managers and a Postfix service to allow sending emails through PHP [mail()](http://php.net/manual/en/function.mail.php) function.
-
-If you dont need support for MySQL/MariaDB, or your app runs on PHP 5.4, maybe [fauria/lap](https://hub.docker.com/r/fauria/lamp) suits your needs better.
+![docker_logo](https://raw.githubusercontent.com/peter-hartmann/docker-debian-lamp/master/docker_139x115.png)
+Features:
+ * Folk and incremental change to flauria/lamp
+ * Debian LAMP stack
+ * Popular PHP modules
+ * Support for [Composer](https://getcomposer.org/) and [npm](https://www.npmjs.com/) package managers
+ * Postfix setup as relayhost, ideal for sending email through gmail from PHP [mail()](http://php.net/manual/en/function.mail.php) function, or commanline sendmail
+ * No password for debian root and mariadb/mysql root
+ * DB data exposed as valume, will be initialized when data folder is empty
 
 Includes the following components:
 
- * Ubuntu 16.04 LTS Xenial Xerus base image.
+ * Debian Jassie base image.
  * Apache HTTP Server 2.4
  * MariaDB 10.0
  * Postfix 2.11
@@ -50,20 +54,20 @@ Includes the following components:
 	* git
 	* composer
 	* npm / nodejs
-	* bower
 	* vim
 	* tree
 	* nano
 	* ftp
 	* curl
+	* expect
 
-Installation from [Docker registry hub](https://registry.hub.docker.com/u/fauria/lamp/).
+Todo: Installation from [Docker registry hub](https://registry.hub.docker.com/u/peter-hartmann/lamp/).
 ----
 
-You can download the image using the following command:
+Todo: You can download the image using the following command:
 
 ```bash
-docker pull fauria/lamp
+docker pull peter-hartmann/debian-lamp
 ```
 
 Environment variables
@@ -104,13 +108,6 @@ This image uses environment variables to allow the configuration of some paramet
 * Default value: UTC
 * Accepted values: Any of PHP's [supported timezones](http://php.net/manual/en/timezones.php)
 * Description: Set php.ini default date.timezone directive and sets MariaDB as well.
-
-----
-
-* Variable name: TERM
-* Default value: dumb
-* Accepted values: dumb
-* Description: Allow usage of terminal programs inside the container, such as `mysql` or `nano`.
 
 Exposed port and volumes
 ----

@@ -32,12 +32,12 @@ fi
 if [ ! $LOG_STDOUT ]; then
 cat << EOB
     
-    **********************************************
-    *                                            *
-    *    Docker image: fauria/lamp               *
-    *    https://github.com/fauria/docker-lamp   *
-    *                                            *
-    **********************************************
+    *************************************************************
+    *                                                           *
+    *    Docker image: peter-hartmann/debian-lamp               *
+    *    https://github.com/peter-hartmann/docker-debian-lamp   *
+    *                                                           *
+    *************************************************************
 
     SERVER SETTINGS
     ---------------
@@ -59,7 +59,15 @@ fi
 /usr/sbin/postfix start
 
 # Run MariaDB
-/usr/bin/mysqld_safe --timezone=${DATE_TIMEZONE}&
+if [ -d "/var/lib/mysql" ]; then chown -R mysql:mysql /var/lib/mysql/; fi #ensure mysql owns it even if mounted;
+if [ -d "/var/log/mysql" ]; then chown -R mysql:mysql /var/log/mysql/; fi #ensure mysql owns it even if mounted;
+#if [ $(find /var/lib/mysql -maxdepth 0 -type d -empty 2>/dev/null) ]; then echo "Empty directory" > /var/lib/mysql/peter.log; fi
+
+#service mysql start
+#  /usr/bin/mysqld --timezone=${DATE_TIMEZONE}&
+
+#mysqld --initialize
+#mysql-secure-init.sh
 
 # Run Apache:
 if [ $LOG_LEVEL == 'debug' ]; then
