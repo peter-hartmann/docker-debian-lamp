@@ -56,18 +56,21 @@ fi
 /bin/sed -i "s/\;date\.timezone\ \=/date\.timezone\ \=\ ${DATE_TIMEZONE}/" /etc/php/7.0/apache2/php.ini
 
 # Run Postfix
+rm /var/spool/postfix/pid/master.pid #workaround https://linuxconfig.org/fatal-the-postfix-mail-system-is-already-running-solution
 /usr/sbin/postfix start
 
 # Run MariaDB
 if [ -d "/var/lib/mysql" ]; then chown -R mysql:mysql /var/lib/mysql/; fi #ensure mysql owns it even if mounted;
 if [ -d "/var/log/mysql" ]; then chown -R mysql:mysql /var/log/mysql/; fi #ensure mysql owns it even if mounted;
-#if [ $(find /var/lib/mysql -maxdepth 0 -type d -empty 2>/dev/null) ]; then echo "Empty directory" > /var/lib/mysql/peter.log; fi
+if [ $(find /var/lib/mysql -maxdepth 0 -type d -empty 2>/dev/null) ]; then 
+	echo "First time run, datadir is empty, initializing database ...";
+	mysql_install_db
+	service mysql start;
+	mysql-secure-init.sh;
+fi
 
-#service mysql start
+service mysql start
 #  /usr/bin/mysqld --timezone=${DATE_TIMEZONE}&
-
-#mysqld --initialize
-#mysql-secure-init.sh
 
 # Run Apache:
 if [ $LOG_LEVEL == 'debug' ]; then

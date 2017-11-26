@@ -2,4 +2,4 @@
 # This file defines user:pass to login into SMTP relay hosts
 #
 # SMTP_RELAY_HOST USERNAME:PASSWORD
-
+[smtp.gmail.com]:587 USERNAME:PASSWORD

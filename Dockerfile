@@ -68,11 +68,12 @@ ENV DATE_TIMEZONE UTC
 ADD assets/postfix-sasl_passwd /etc/postfix/sasl/sasl_passwd
 RUN postmap /etc/postfix/sasl/sasl_passwd &&\
     chown root:root /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db &&\
-    chmod 0600 /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db
+    chmod 0600 /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db &&\
+	cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf #https://ubuntuforums.org/showthread.php?t=2213546 
+
 ADD assets/postfix-main.cf /etc/postfix/main.cf
 
 COPY assets/index.php /var/www/html/index.php
-RUN echo here -----change this line to force rebuilding from here---
 COPY assets/run-lamp.sh /usr/sbin/
 COPY assets/mysql-secure-init.sh /usr/sbin/
 
