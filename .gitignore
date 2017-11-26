@@ -1,2 +1,0 @@
-# prevent accidental email password uploading
-assets/postfix-sasl_passwd
