@@ -3,17 +3,16 @@ peter-hartmann/lamp
 
 ![docker_logo](https://raw.githubusercontent.com/peter-hartmann/docker-debian-lamp/master/docker_139x115.png)
 Features:
- * Folk and incremental change to flauria/lamp
- * Debian LAMP stack
- * Popular PHP modules
+ * Fork and incremental change of [flauria/lamp](https://github.com/fauria/docker-lamp)
+ * Debian LAMP
+ * Email support for PHP [mail()](http://php.net/manual/en/function.mail.php) and commandline via relayhost, e.g. use Gmail as relay host
+ * Supports external MariaDB/MySql data volume, will be auto initialized if empty
  * Support for [Composer](https://getcomposer.org/) and [npm](https://www.npmjs.com/) package managers
- * Postfix setup as relayhost, ideal for sending email through gmail from PHP [mail()](http://php.net/manual/en/function.mail.php) function, or commanline sendmail
- * No password for debian root and mariadb/mysql root
- * DB data exposed as valume, will be initialized when data folder is empty
+ * No password for debian root and no password for mariadb/mysql root
 
 Includes the following components:
 
- * Debian Jassie base image.
+ * Debian Jessie base image
  * Apache HTTP Server 2.4
  * MariaDB 10.0
  * Postfix 2.11
@@ -61,13 +60,28 @@ Includes the following components:
 	* curl
 	* expect
 
-Todo: Installation from [Docker registry hub](https://registry.hub.docker.com/u/peter-hartmann/lamp/).
+Building from [github](https://github.com/peter-hartmann/docker-debian-lamp).
 ----
 
-Todo: You can download the image using the following command:
-
+Clone the repository, setup mail relay credentials, build the docker image, spawn a container, 
 ```bash
-docker pull peter-hartmann/debian-lamp
+git clone https://github.com/peter-hartmann/docker-debian-lamp.git
+nano docker-debian-lamp/assets/postfix-sasl_passwd
+docker build -t peter-hartmann/debian-lamp docker-debian-lamp/
+docker run -d --rm --name lamp -v $(pwd)/www/html:/var/www/html -v $(pwd)/lib/mysql:/var/lib/mysql -v $(pwd)/log/httpd:/var/log/httpd -v $(pwd)/log/mysql:/var/log/mysql peter-hartmann/debian-lamp
+```
+Get inside the container
+```bash
+docker exec -it lamp bash
+```
+Send email
+```bash
+sendmail name@domain.com <<EOF
+from:your@gmail.com
+reply-to:your@gmail.com
+to:name@domain.com
+subject:abc 1
+EOF
 ```
 
 Environment variables
@@ -130,24 +144,28 @@ Use cases
 #### Create a temporary container for testing purposes:
 
 ```
-	docker run -i -t --rm fauria/lamp bash
+docker run -it --rm peter-hartmann/debian-lamp bash
+```
+Then in container run
+```
+run-lamp.sh
 ```
 
 #### Create a temporary container to debug a web app:
 
 ```
-	docker run --rm -p 8080:80 -e LOG_STDOUT=true -e LOG_STDERR=true -e LOG_LEVEL=debug -v /my/data/directory:/var/www/html fauria/lamp
+docker run --rm -p 8080:80 -e LOG_STDOUT=true -e LOG_STDERR=true -e LOG_LEVEL=debug -v /my/data/directory:/var/www/html peter-hartmann/debian-lamp
 ```
 
 #### Create a container linking to another [MySQL container](https://registry.hub.docker.com/_/mysql/):
 
 ```
-	docker run -d --link my-mysql-container:mysql -p 8080:80 -v /my/data/directory:/var/www/html -v /my/logs/directory:/var/log/httpd --name my-lamp-container fauria/lamp
+docker run -d --link my-mysql-container:mysql -p 8080:80 -v /my/data/directory:/var/www/html -v /my/logs/directory:/var/log/httpd --name my-lamp-container peter-hartmann/debian-lamp
 ```
 
 #### Get inside a running container and open a MariaDB console:
 
 ```
-	docker exec -i -t my-lamp-container bash
-	mysql -u root
+docker exec -it my-lamp-container bash
+mysql -u root
 ```
