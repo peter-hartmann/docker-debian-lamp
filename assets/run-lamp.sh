@@ -55,26 +55,40 @@ fi
 # Set PHP timezone
 /bin/sed -i "s/\;date\.timezone\ \=/date\.timezone\ \=\ ${DATE_TIMEZONE}/" /etc/php/7.0/apache2/php.ini
 
-# Run Postfix
-rm /var/spool/postfix/pid/master.pid #workaround https://linuxconfig.org/fatal-the-postfix-mail-system-is-already-running-solution
+echo "###### Starting Postfix"
+# workaround https://linuxconfig.org/fatal-the-postfix-mail-system-is-already-running-solution
+rm -f /var/spool/postfix/pid/master.pid
 /usr/sbin/postfix start
 
-# Run MariaDB
 if [ -d "/var/lib/mysql" ]; then chown -R mysql:mysql /var/lib/mysql/; fi #ensure mysql owns it even if mounted;
 if [ -d "/var/log/mysql" ]; then chown -R mysql:mysql /var/log/mysql/; fi #ensure mysql owns it even if mounted;
 if [ $(find /var/lib/mysql -maxdepth 0 -type d -empty 2>/dev/null) ]; then 
-	echo "First time run, datadir is empty, initializing database ...";
+	echo "###### Initializing MariaDB data dir - it was empty"
 	mysql_install_db
 	service mysql start;
 	mysql-secure-init.sh;
 fi
 
+echo "###### Starting MariaDB"
 service mysql start
 #  /usr/bin/mysqld --timezone=${DATE_TIMEZONE}&
 
-# Run Apache:
-if [ $LOG_LEVEL == 'debug' ]; then
-    /usr/sbin/apachectl -DFOREGROUND -k start -e debug
-else
-    &>/dev/null /usr/sbin/apachectl -DFOREGROUND -k start
-fi
+# workaround https://serverfault.com/a/480890
+mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '`sed -n '/user *= *debian-sys-main/{n;s/password *= *//;x};${x;p}' /etc/mysql/debian.cnf`';FLUSH PRIVILEGES;"
+
+echo "###### Starting Apache"
+# workaround https://askubuntu.com/a/396048
+echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf
+ln -s /etc/apache2/conf-available/servername.conf /etc/apache2/conf-enabled/servername.conf
+service apache2 start
+
+echo "###### Applying config"
+cp -n config.sh /backup/ || true
+/backup/config.sh
+
+## Run Apache:
+#if [ $LOG_LEVEL == 'debug' ]; then
+#    /usr/sbin/apachectl -DFOREGROUND -k start -e debug
+#else
+#    &>/dev/null /usr/sbin/apachectl -DFOREGROUND -k start
+#fi

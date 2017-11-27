@@ -73,21 +73,26 @@ RUN postmap /etc/postfix/sasl/sasl_passwd &&\
 
 ADD assets/postfix-main.cf /etc/postfix/main.cf
 
+WORKDIR /root
+
 COPY assets/index.php /var/www/html/index.php
 COPY assets/run-lamp.sh /usr/sbin/
 COPY assets/mysql-secure-init.sh /usr/sbin/
+COPY assets/config.sh ./
 
 RUN a2enmod rewrite
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 RUN chmod +x /usr/sbin/run-lamp.sh
 RUN chmod +x /usr/sbin/mysql-secure-init.sh
+RUN chmod +x ./config.sh
 RUN chown -R www-data:www-data /var/www/html
 
 VOLUME /var/www/html
 VOLUME /var/log/httpd
 VOLUME /var/lib/mysql
 VOLUME /var/log/mysql
+VOLUME /backup
 
 EXPOSE 80 3306
 
-CMD ["/usr/sbin/run-lamp.sh"]
+ENTRYPOINT /usr/sbin/run-lamp.sh && bash
