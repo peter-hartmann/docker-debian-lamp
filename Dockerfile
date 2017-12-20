@@ -53,7 +53,7 @@ RUN apt-get install -y \
 	php7.0-mbstring
 RUN apt-get install -y apache2 libapache2-mod-php7.0
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mariadb-common mariadb-server mariadb-client
-RUN apt-get -y install postfix git nodejs npm nano tree vim curl ftp snmp expect
+RUN apt-get -y install postfix git nodejs npm nano tree vim curl ftp snmp expect xtrabackup
 RUN npm install -g yarn grunt-cli gulp
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
