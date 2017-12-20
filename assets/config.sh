@@ -27,7 +27,7 @@ declare -A CONFIG_ACTION=(
 
 function init_postfix() {
 	postmap /etc/postfix/sasl/sasl_passwd
-    rm /var/spool/postfix/pid/master.pid
+	rm /var/spool/postfix/pid/master.pid
 	service postfix stop;
 	service postfix start;
 }
@@ -47,7 +47,7 @@ function Set () {
 	case "$method" in
         substitude_next_line)
 			sed '/'"$pattern"'/!b;n;s|.*|'"$value"'|w '"$tmpsed" "$filename" >$tmpfile;
-            ;;
+			;;
         named_value)
 			sed -r 's|('"$pattern"').*|\1'"$value"'|w '"$tmpsed" "$filename" >$tmpfile
 			;;
