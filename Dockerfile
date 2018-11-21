@@ -95,4 +95,4 @@ VOLUME /backup
 
 EXPOSE 80 3306
 
-ENTRYPOINT /usr/sbin/run-lamp.sh && bash
+ENTRYPOINT /usr/sbin/run-lamp.sh && tail -f /dev/null
