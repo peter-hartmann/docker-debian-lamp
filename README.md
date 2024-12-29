@@ -1,4 +1,4 @@
-peter-hartmann/lamp
+peter-hartmann/ubuntu-lamp
 ===================
 
 ![docker_logo](https://raw.githubusercontent.com/peter-hartmann/docker-debian-lamp/master/docker_139x115.png)
@@ -63,12 +63,14 @@ Includes the following components:
 Building from [github](https://github.com/peter-hartmann/docker-debian-lamp).
 ----
 
-Clone the repository, setup mail relay credentials, build the docker image, spawn a container, 
+Clone the repository, setup mail relay credentials, build the docker image, spawn a container,
 ```bash
 git clone https://github.com/peter-hartmann/docker-debian-lamp.git
-nano docker-debian-lamp/assets/postfix-sasl_passwd
-docker build -t peter-hartmann/debian-lamp docker-debian-lamp/
-docker run -d --rm --name lamp -v $(pwd)/www/html:/var/www/html -v $(pwd)/lib/mysql:/var/lib/mysql -v $(pwd)/log/httpd:/var/log/httpd -v $(pwd)/log/mysql:/var/log/mysql peter-hartmann/debian-lamp
+cd docker-debian-lamp
+nano assets/postfix-sasl_passwd
+docker build -t peter-hartmann/ubuntu-lamp .
+docker run -it --rm --name lamp -e TZ=America/Chicago --entrypoint bash peter-hartmann/ubuntu-lamp
+docker run -d --rm --name lamp -e TZ=America/Chicago -v $(pwd)/www/html:/var/www/html -v $(pwd)/lib/mysql:/var/lib/mysql -v $(pwd)/log/httpd:/var/log/httpd -v $(pwd)/log/mysql:/var/log/ peter-hartmann/ubuntu-lamp
 ```
 Get inside the container
 ```bash
@@ -144,7 +146,7 @@ Use cases
 #### Create a temporary container for testing purposes:
 
 ```
-docker run -it --rm peter-hartmann/debian-lamp bash
+docker run -it --rm peter-hartmann/ubuntu-lamp bash
 ```
 Then in container run
 ```
@@ -154,13 +156,13 @@ run-lamp.sh
 #### Create a temporary container to debug a web app:
 
 ```
-docker run --rm -p 8080:80 -e LOG_STDOUT=true -e LOG_STDERR=true -e LOG_LEVEL=debug -v /my/data/directory:/var/www/html peter-hartmann/debian-lamp
+docker run --rm -p 8080:80 -e LOG_STDOUT=true -e LOG_STDERR=true -e LOG_LEVEL=debug -v /my/data/directory:/var/www/html peter-hartmann/ubuntu-lamp
 ```
 
 #### Create a container linking to another [MySQL container](https://registry.hub.docker.com/_/mysql/):
 
 ```
-docker run -d --link my-mysql-container:mysql -p 8080:80 -v /my/data/directory:/var/www/html -v /my/logs/directory:/var/log/httpd --name my-lamp-container peter-hartmann/debian-lamp
+docker run -d --link my-mysql-container:mysql -p 8080:80 -v /my/data/directory:/var/www/html -v /my/logs/directory:/var/log/httpd --name my-lamp-container peter-hartmann/ubuntu-lamp
 ```
 
 #### Get inside a running container and open a MariaDB console:

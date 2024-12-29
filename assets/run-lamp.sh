@@ -3,7 +3,7 @@
 function exportBoolean {
     if [ "${!1}" = "**Boolean**" ]; then
             export ${1}=''
-    else 
+    else
             export ${1}='Yes.'
     fi
 }
@@ -31,7 +31,7 @@ fi
 # stdout server info:
 if [ ! $LOG_STDOUT ]; then
 cat << EOB
-    
+
     *************************************************************
     *                                                           *
     *    Docker image: peter-hartmann/debian-lamp               *
@@ -62,7 +62,7 @@ rm -f /var/spool/postfix/pid/master.pid
 
 if [ -d "/var/lib/mysql" ]; then chown -R mysql:mysql /var/lib/mysql/; fi #ensure mysql owns it even if mounted;
 if [ -d "/var/log/mysql" ]; then chown -R mysql:mysql /var/log/mysql/; fi #ensure mysql owns it even if mounted;
-if [ $(find /var/lib/mysql -maxdepth 0 -type d -empty 2>/dev/null) ]; then 
+if [ $(find /var/lib/mysql -maxdepth 0 -type d -empty 2>/dev/null) ]; then
 	echo "###### Initializing MariaDB data dir - it was empty"
 	mysql_install_db
 	service mysql start;
@@ -72,9 +72,8 @@ fi
 echo "###### Starting MariaDB"
 service mysql start
 #  /usr/bin/mysqld --timezone=${DATE_TIMEZONE}&
-
-# workaround https://serverfault.com/a/480890
-mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '`sed -n '/user *= *debian-sys-main/{n;s/password *= *//;x};${x;p}' /etc/mysql/debian.cnf`';FLUSH PRIVILEGES;"
+# # workaround https://serverfault.com/a/480890
+# mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '`sed -n '/user *= *debian-sys-main/{n;s/password *= *//;x};${x;p}' /etc/mysql/debian.cnf`';FLUSH PRIVILEGES;"
 
 echo "###### Starting Apache"
 # workaround https://askubuntu.com/a/396048
